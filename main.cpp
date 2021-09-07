@@ -5,46 +5,25 @@
 #include <QApplication>
 #include <QMouseEvent>
 #include <QVector>
+#include <QObject>
+
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <random>
+#include <ctime>
+#include <cmath>
+#include <memory>
+
+#include "square.h"
+#include "puzzleBoard.h"
+#include "puzzle.h"
+
+//#include "main.moc"
+
+using namespace std;
 
 int SCENE_RECT = 800;
-
-//QVector<SquareQt*> setupSquares(QGraphicsScene *scene)
-//{
-//    int offsetX = 0;
-//    int offsetY = 0;
-//    int side = 4;
-//    int RECT_SIZE = SCENE_RECT / side;
-//    int num_rects = side * side;
-//    SquareQt * rect;
-
-//    //
-//    int movable1 = 1;
-//    int movable2 = 4;
-//    //
-//    QVector<SquareQt*> squares(num_rects);
-//    for(int i = 0; i < num_rects; i++)
-//    {
-
-//        if(i == movable1 or i == movable2)
-//            rect = new SquareQt(RECT_SIZE, offsetX, offsetY, true, false, i);
-//        else if(i == 0)
-//            rect = new SquareQt(RECT_SIZE, offsetX, offsetY, false, true, i);
-//        else
-//            rect = new SquareQt(RECT_SIZE, offsetX, offsetY, false, false, i);
-//        squares[i] = rect;
-//        scene->addItem(rect);
-//        if ((i+1) % side == 0)
-//        {
-//            offsetX = 0;
-//            offsetY += RECT_SIZE;
-//        }
-//        else
-//        {
-//            offsetX += RECT_SIZE;
-//        }
-//    }
-//    return squares;
-//}
 
 int main(int argc, char *argv[])
 {
@@ -59,8 +38,18 @@ int main(int argc, char *argv[])
     QGraphicsView * view = new QGraphicsView();
     view->setFixedSize(SCENE_RECT, SCENE_RECT);
 
-    BoardQt board = BoardQt(SCENE_RECT, 4);
-    QVector<SquareQt*> squares = board.setupSquares(scene);
+    BoardQt *board = new BoardQt(SCENE_RECT, 4);
+
+    Puzzle *puzzle = new Puzzle(4);
+    board->puzzle = puzzle;
+    board->puzzle->setup_board();
+
+    QVector<SquareQt*> squares = board->setupSquares(scene, board->puzzle->puzzleBoard);
+    for(int i=0; i < squares.size(); i++)
+    {
+        QObject::connect(squares[i], &SquareQt::moveMade,
+                         board, &BoardQt::updateBoard);
+    }
 //    SquareQt * rect = new SquareQt(RECT_SIZE, 0, 0);
 //    SquareQt * rect2 = new SquareQt(RECT_SIZE, 100, 100);
 
@@ -69,6 +58,17 @@ int main(int argc, char *argv[])
 
 //    rect->setFlag(QGraphicsItem::ItemIsFocusable);
 //    rect->setFocus();
+
+    // Dijkstra alg = Dijkstra(boardSize*boardSize, boardSize);
+    // alg.solve(puzzle);
+//    int toMove;
+//    while(true)
+//    {
+//        cout<<"\n"<<"Enter id of the square you want to move: ";
+//        cin>>toMove;
+//        cout<<"\n"<<puzzle.switchSquares(puzzle.puzzleBoard, toMove)<<"\n";
+//        puzzle.print_board(puzzle.get_puzzleBoard());
+//    }
 
 
     view->setScene(scene);

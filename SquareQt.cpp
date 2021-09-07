@@ -5,23 +5,24 @@
 #include <QtWidgets>
 #include <QtCore>
 
-SquareQt::SquareQt(int rectSize, int positionX, int positionY, bool isMovable, bool isEmpty, int id, SquareQt* emptySquare, QGraphicsTextItem *text) : QGraphicsRectItem()
+SquareQt::SquareQt(int rectSize, int positionX, int positionY,
+                   bool isMovable, bool isEmpty, int id, int position,
+                   SquareQt* emptySquare, QGraphicsTextItem *text)
+    : QObject(), QGraphicsRectItem()
 {
     this->id = id;
     this->isMovable = isMovable;
     this->isEmpty = isEmpty;
     this->size = rectSize;
     this->emptySquare = emptySquare;
-    this->text = text;
     this->setRect(0, 0, rectSize, rectSize);
     this->setX(positionX);
     this->setY(positionY);
     if(!this->isEmpty)
-        text->setPlainText(QString::number(this->id));
-    text->setFont(QFont("Arial", 35));
-    text->setPos(positionX, positionY);
-    this->setParentItem(text);
-    this->setFlag(QGraphicsItem::ItemStacksBehindParent);
+    {
+        this->position = position;
+        this->setText(text);
+    }
 //    this->setRect(text->boundingRect());
 //    this->paint()
     if(isMovable)
@@ -44,21 +45,40 @@ SquareQt::SquareQt(int rectSize, int positionX, int positionY, bool isMovable, b
 //    this->emptySquarePos=pos;
 //}
 
+void SquareQt::setText(QGraphicsTextItem *text)
+{
+    this->text = text;
+    text->setPlainText(QString::number(this->id));
+    text->setFont(QFont("Arial", 35));
+    text->setPos(this->x(), this->y());
+    this->setParentItem(text);
+    this->setFlag(QGraphicsItem::ItemStacksBehindParent);
+}
+
+void SquareQt::setEmptySquare(SquareQt *emptySquare)
+{
+    this->emptySquare = emptySquare;
+}
+
 bool SquareQt::movableArea(QPointF *point)
 {
     // Make sure that the square is moving only horizontally or diagonally
     // and through allowed areas
-    if ((this->emptySquare->contains(QPointF(point->x(), point->y() + this->size))
-            && this->emptySquare->contains(QPointF(point->x(), point->y()))) ||
-        (this->emptySquare->contains(QPointF(point->x() + this->size, point->y()))
-            && this->emptySquare->contains(QPointF(point->x(), point->y())))) {
+    if (this->collidesWithItem(this->emptySquare, Qt::IntersectsItemBoundingRect)) {
         qDebug() << "gello";
         return true;//TODO dont move to the field of another movable square
     }
     else {
         qDebug() << "kokokokko";
+        qDebug() << this->emptySquare->pos();
+        qDebug() << QPointF(point->x(), point->y());
         return false;
     }
+}
+
+void SquareQt::setPosition(int position)
+{
+    this->position = position;
 }
 
 void SquareQt::setPos(const QPointF &pos)
@@ -71,11 +91,16 @@ void SquareQt::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton) && (flags() & ItemIsMovable)) {
         qDebug() << event->scenePos() << " " << this->pos();
-        QPointF toMove = this->pos() - lastMousePos + event->scenePos();
+        QPointF *toMove;
+        // restrict moves alongside one of the axis
+        if(this->moveVertical)
+            toMove = new QPointF(this->x(), (this->pos() - lastMousePos + event->scenePos()).y());
+        else
+            toMove = new QPointF((this->pos() - lastMousePos + event->scenePos()).x(), this->y());
         lastMousePos = event->scenePos();
-        if(movableArea(&toMove))
+        if(movableArea(toMove))
         {
-            this->setPos(toMove);
+            this->setPos(*toMove);
         }
     }
 }
@@ -83,7 +108,17 @@ void SquareQt::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void SquareQt::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton) && (flags() & ItemIsMovable)) {
-        qDebug() << "event->scenePos() << " " << this->pos()";
+        // check if the move has to be along vertical or horizontal axis.
+        // To do that, check if moving up or down takes the square closer
+        // to the empty square's top left corner. If so, the move has to
+        // be vertical
+        QPointF moveUp = this->pos() + QPointF(0, 1);
+        QPointF moveDown = this->pos() + QPointF(0, -1);
+        if((this->emptySquare->pos() - moveUp).manhattanLength() < (this->emptySquare->pos() - this->pos()).manhattanLength() ||
+                (this->emptySquare->pos() - moveDown).manhattanLength() < (this->emptySquare->pos() - this->pos()).manhattanLength())
+            this->moveVertical = true;
+        else
+            this->moveVertical = false;
         lastMousePos = event->scenePos();
         this->beforeMove=this->pos();
     }
@@ -97,6 +132,7 @@ void SquareQt::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         {
             this->setPos(this->emptySquare->pos());
             this->emptySquare->setPos(this->beforeMove);
+            emit this->moveMade(this->position);
         }
         else
         {

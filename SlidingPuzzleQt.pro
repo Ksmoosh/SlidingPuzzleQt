@@ -12,12 +12,18 @@ SOURCES += \
     BoardQt.cpp \
     SquareQt.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    puzzle.cpp \
+    puzzleBoard.cpp \
+    square.cpp
 
 HEADERS += \
     BoardQt.h \
     SquareQt.h \
-    mainwindow.h
+    mainwindow.h \
+    puzzle.h \
+    puzzleBoard.h \
+    square.h
 
 FORMS += \
     mainwindow.ui
