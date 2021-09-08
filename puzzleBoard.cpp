@@ -17,8 +17,17 @@ PuzzleBoard::PuzzleBoard(int side) : size(side * side), dim_size(side)
     this->randomBoard = vector<Square>(this->size);
 };
 
+int PuzzleBoard::get_dim_size()
+{
+    return this->dim_size;
+}
 
-int const PuzzleBoard::get_position_of_blank()
+int PuzzleBoard::get_size()
+{
+    return this->size;
+}
+
+int PuzzleBoard::get_position_of_blank()
 {
     for(int i = 0; i < this->size; i++)
     {
@@ -48,4 +57,9 @@ bool PuzzleBoard::is_movable(int &position)
             return true;
     }
     return false;
+}
+
+void PuzzleBoard::set_movables(std::vector<int> movables)
+{
+    this->movables = movables;
 }

@@ -25,7 +25,6 @@ QVector<SquareQt*> BoardQt::setupSquares(QGraphicsScene *scene, PuzzleBoard &boa
             rect = new SquareQt(this->rect_size, offsetX, offsetY, true, false, board.randomBoard[i].get_id(), i, this->emptySquare, text);
         else if(board.randomBoard[i].get_id() == 0)
         {
-//            rect = new SquareQt(this->rect_size, offsetX, offsetY, false, true, board.randomBoard[i].get_id(), this->emptySquare, text);
             this->emptySquare->setEmptySquare(this->emptySquare);
             this->emptySquare->setText(text);
             this->emptySquare->setPos(QPointF(offsetX, offsetY));
@@ -55,13 +54,12 @@ void BoardQt::updateBoard(int move)
     this->puzzle->switchSquares(this->puzzle->puzzleBoard, move);
     this->puzzle->set_movables(this->puzzle->puzzleBoard);
     this->puzzle->increaseNumMoves();
-    qDebug() << this->puzzle->get_num_moves();
     std::vector<int> movables = this->puzzle->get_movables();
     for(int i = 0; i < this->squares.size(); i++)
     {
         for(int j = 0; j < movables.size(); j++)
         {
-            if(this->squares[i]->position == movables[j])
+            if(this->squares[i]->get_position() == movables[j])
             {
                 this->squares[i]->setAsMovable();
                 break;

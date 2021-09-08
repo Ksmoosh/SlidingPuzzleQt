@@ -21,8 +21,6 @@
 #include "puzzleBoard.h"
 #include "puzzle.h"
 
-//#include "main.moc"
-
 using namespace std;
 
 int SCENE_RECT = 800;
@@ -31,8 +29,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     int puzzle_dim;
-    //MainWindow w;
-    //w.show();
 
     QMessageBox dimChooseBox;
     dimChooseBox.setWindowTitle("Witaj w grze!");
@@ -40,9 +36,7 @@ int main(int argc, char *argv[])
     QAbstractButton* button3dim = dimChooseBox.addButton(QObject::tr("3x3"), QMessageBox::YesRole);
     QAbstractButton* button4dim = dimChooseBox.addButton(QObject::tr("4x4"), QMessageBox::YesRole);
     dimChooseBox.setText(QStringLiteral("Witaj! Wybierz wymiary puzzli:"));
-//    dimChooseBox.setStandardButtons(QMessageBox::Ok);
-//    dimChooseBox.setButtonText(QMessageBox::Ok, QObject::tr("Zakończ"));
-//    dimChooseBox.setDefaultButton(QMessageBox::Ok);
+
     dimChooseBox.exec();
     if(dimChooseBox.clickedButton()==button2dim)
     {
@@ -87,70 +81,3 @@ int main(int argc, char *argv[])
     view->show();
     return a.exec();
 }
-
-//#include <QtWidgets>
-
-//class Steer : public QGraphicsView
-//{
-//public:
-//    Steer()
-//    {
-//        scene = new QGraphicsScene;
-//        p1 = new QGraphicsRectItem;
-
-//        //add player
-//        p1->setRect(0, 0, 10, 80);
-//        p1->setX(760);
-//        p1->setY(160);
-
-//        //add scene
-//        scene->setSceneRect(0, 0, 800, 400);
-
-//        //add moveable item
-//        scene->addItem(p1);
-
-//        //set scene
-//        this->setScene(scene);
-//        this->show();
-//    }
-
-//protected:
-//    void mousePressEvent(QMouseEvent * click)
-//    {
-//        if (p1->contains(p1->mapFromScene(click->localPos()))) {
-//            lastMousePos = click->pos();
-//        } else {
-//            lastMousePos = QPoint(-1, -1);
-//        }
-//    }
-
-//    void mouseMoveEvent(QMouseEvent * event)
-//    {
-//        if(!(event->buttons() & Qt::LeftButton)) {
-//            return;
-//        }
-
-//        if (lastMousePos == QPoint(-1, -1)) {
-//            return;
-//        }
-
-//        p1->setPos(p1->pos() + (event->localPos() - lastMousePos));
-//        lastMousePos = event->pos();
-//    }
-
-//private:
-//    QGraphicsScene *scene;
-//    QGraphicsRectItem *p1;
-
-//    QPoint lastMousePos;
-//};
-
-//int main(int argc, char *argv[])
-//{
-//    QApplication a(argc, argv);
-
-//    Steer w;
-//    w.show();
-
-//    return a.exec();
-//}

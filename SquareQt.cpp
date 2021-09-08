@@ -23,8 +23,6 @@ SquareQt::SquareQt(int rectSize, int positionX, int positionY,
         this->position = position;
         this->setText(text);
     }
-//    this->setRect(text->boundingRect());
-//    this->paint()
     if(isMovable)
     {
         this->setAsMovable();
@@ -37,6 +35,11 @@ SquareQt::SquareQt(int rectSize, int positionX, int positionY,
     {
         this->setAsNonMovable();
     }
+}
+
+int SquareQt::get_position()
+{
+    return this->position;
 }
 
 void SquareQt::setAsMovable()
@@ -69,18 +72,14 @@ void SquareQt::setEmptySquare(SquareQt *emptySquare)
     this->emptySquare = emptySquare;
 }
 
-bool SquareQt::movableArea(QPointF *point)
+bool SquareQt::movableArea()
 {
     // Make sure that the square is moving only horizontally or diagonally
     // and through allowed areas
     if (this->collidesWithItem(this->emptySquare, Qt::IntersectsItemBoundingRect)) {
-        qDebug() << "gello";
-        return true;//TODO dont move to the field of another movable square
+        return true;
     }
     else {
-        qDebug() << "kokokokko";
-        qDebug() << this->emptySquare->pos();
-        qDebug() << QPointF(point->x(), point->y());
         return false;
     }
 }
@@ -99,7 +98,6 @@ void SquareQt::setPos(const QPointF &pos)
 void SquareQt::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton) && (flags() & ItemIsMovable)) {
-        qDebug() << event->scenePos() << " " << this->pos();
         QPointF *toMove;
         // restrict moves alongside one of the axis
         if(this->moveVertical)
@@ -107,7 +105,7 @@ void SquareQt::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         else
             toMove = new QPointF((this->pos() - lastMousePos + event->scenePos()).x(), this->y());
         lastMousePos = event->scenePos();
-        if(movableArea(toMove))
+        if(movableArea())
         {
             this->setPos(*toMove);
         }
@@ -136,7 +134,6 @@ void SquareQt::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void SquareQt::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if ((event->button() & Qt::LeftButton) && (flags() & ItemIsMovable)) {
-        qDebug() << "Released";
         if((this->emptySquare->pos() - this->pos()).manhattanLength() < (this->beforeMove - this->pos()).manhattanLength())
         {
             this->setPos(this->emptySquare->pos());

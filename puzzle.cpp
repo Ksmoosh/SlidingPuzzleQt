@@ -80,7 +80,7 @@ void Puzzle::create_random_int_board(vector<int> &puzzleIntBoard)
 
 void Puzzle::random_board_to_squares(PuzzleBoard &puzzleBoard, vector<int> &puzzleIntBoard)
 {
-    int size = puzzleBoard.size;
+    int size = puzzleBoard.get_size();
     for(int i = 0; i < size; i++)
     {
         puzzleBoard.randomBoard[i] = Square(puzzleIntBoard[i], i, size);
@@ -89,7 +89,7 @@ void Puzzle::random_board_to_squares(PuzzleBoard &puzzleBoard, vector<int> &puzz
 
 void Puzzle::setup_board()
 {
-    vector<int> randomInts(this->puzzleBoard.size);
+    vector<int> randomInts(this->puzzleBoard.get_size());
 
     create_random_int_board(randomInts);
     random_board_to_squares(this->puzzleBoard, randomInts);
@@ -98,34 +98,23 @@ void Puzzle::setup_board()
     print_board(this->puzzleBoard);
 }
 
-void Puzzle::print_board(PuzzleBoard const &puzzleBoard)
+void Puzzle::print_board(PuzzleBoard &puzzleBoard)
 {
     cout << "Current board:\n";
-    for(int i = 0; i < puzzleBoard.size; i++)
+    for(int i = 0; i < puzzleBoard.get_size(); i++)
     {
         Square square = puzzleBoard.randomBoard[i];
         cout << left << setw(4) << square.get_id();
-        if((i + 1) % puzzleBoard.dim_size == 0) {
+        if((i + 1) % puzzleBoard.get_dim_size() == 0) {
             cout << "\n";
         }
     }
     cout << "Solved? " << puzzleSolved(puzzleBoard);
-    // cout << "From squares id\n";
-    // for(int i = 0; i < this->num_elems; i++)
-    // {
-    //     if (find(this->movables.begin(), this->movables.end(),i)!=this->movables.end())
-    //         cout << left << setw(4) << 1;
-    //     else
-    //         cout << left << setw(4) << 0;
-    //     if((i + 1) % this->size == 0) {
-    //         cout << "\n";
-    //     }
-    // }
 }
 
-int const Puzzle::get_position_of_blank(PuzzleBoard const &puzzleBoard)
+int const Puzzle::get_position_of_blank(PuzzleBoard &puzzleBoard)
 {
-    for(int i = 0; i < puzzleBoard.size; i++)
+    for(int i = 0; i < puzzleBoard.get_size(); i++)
     {
         if(puzzleBoard.randomBoard[i].get_id() == 0)
         {
@@ -147,12 +136,12 @@ PuzzleBoard Puzzle::get_puzzleBoard() const
 
 std::vector<int> const Puzzle::get_movables()
 {
-    return this->puzzleBoard.movables;
+    return this->puzzleBoard.get_movables();
 }
 
 void Puzzle::set_position_of_blank(PuzzleBoard &puzzleBoard, int const &newBlank)
 {
-    puzzleBoard.blank_position = newBlank;
+    puzzleBoard.set_position_of_blank(newBlank);
 }
 
 void Puzzle::set_position_of_blank(int const &newBlank)
@@ -163,14 +152,14 @@ void Puzzle::set_position_of_blank(int const &newBlank)
 void Puzzle::set_movables(PuzzleBoard &puzzleBoard)
 {
     std::vector<int> movables;
-    for(int i = 0; i < puzzleBoard.size; i++)
+    for(int i = 0; i < puzzleBoard.get_size(); i++)
     {
         if(is_neighbouring_blank(puzzleBoard, i))
         {
             movables.push_back(i);
         }
     }
-    puzzleBoard.movables = movables;
+    puzzleBoard.set_movables(movables);
 }
 
 void Puzzle::set_movables()
@@ -186,8 +175,8 @@ bool Puzzle::is_neighbouring_blank(PuzzleBoard &puzzleBoard, int const &position
     A square can be called a neighbour, if it is either directly above
     or below the blank square, or is right next to it, while on the same row.
     */
-    if (abs(position - puzzleBoard.blank_position) == puzzleBoard.dim_size) return true;
-    else if (abs(position - puzzleBoard.blank_position) == 1 && position / puzzleBoard.dim_size == puzzleBoard.blank_position / puzzleBoard.dim_size) return true;
+    if (abs(position - puzzleBoard.get_position_of_blank()) == puzzleBoard.get_dim_size()) return true;
+    else if (abs(position - puzzleBoard.get_position_of_blank()) == 1 && position / puzzleBoard.get_dim_size() == puzzleBoard.get_position_of_blank() / puzzleBoard.get_dim_size()) return true;
     return false;
 }
 
@@ -195,7 +184,7 @@ bool Puzzle::switchSquares(PuzzleBoard &puzzleBoard, int &squarePosition)
 {
     if(is_neighbouring_blank(puzzleBoard, squarePosition))
     {
-        puzzleBoard.randomBoard[puzzleBoard.blank_position].set_id(puzzleBoard.randomBoard[squarePosition].get_id());
+        puzzleBoard.randomBoard[puzzleBoard.get_position_of_blank()].set_id(puzzleBoard.randomBoard[squarePosition].get_id());
         puzzleBoard.randomBoard[squarePosition].set_id(0);
         set_position_of_blank(puzzleBoard, squarePosition);
         return true;
@@ -205,7 +194,7 @@ bool Puzzle::switchSquares(PuzzleBoard &puzzleBoard, int &squarePosition)
 
 bool Puzzle::puzzleSolved(PuzzleBoard puzzleBoard)
 {
-    for(int i = 0; i < puzzleBoard.size; i++)
+    for(int i = 0; i < puzzleBoard.get_size(); i++)
     {
         if(!puzzleBoard.randomBoard[i].goal_position())
             return false;
@@ -213,7 +202,7 @@ bool Puzzle::puzzleSolved(PuzzleBoard puzzleBoard)
     return true;
 }
 
-int const Puzzle::get_num_moves()
+int Puzzle::get_num_moves()
 {
     return this->num_moves;
 }

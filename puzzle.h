@@ -20,8 +20,8 @@ public:
 
     int const get_row_of_blank(std::vector<int> &puzzleIntBoard);
     int const get_position_of_blank();
-    int const get_position_of_blank(PuzzleBoard const &puzzleBoard);
-    int const get_num_moves();
+    int const get_position_of_blank(PuzzleBoard &puzzleBoard);
+    int get_num_moves();
     PuzzleBoard get_puzzleBoard() const;
     std::vector<int> const get_movables();
     std::vector<int> const get_movables(PuzzleBoard &puzzleBoard);
@@ -35,8 +35,7 @@ public:
     void create_random_int_board(std::vector<int> &puzzleIntBoard);
     void random_board_to_squares(PuzzleBoard &puzzleBoard, std::vector<int> &puzzleIntBoard);
     void increaseNumMoves();
-    //test
-    void print_board(PuzzleBoard const &puzzleBoard);
+    void print_board(PuzzleBoard &puzzleBoard);
     PuzzleBoard puzzleBoard;
 
 private:
