@@ -5,6 +5,19 @@
 #include <QMouseEvent>
 #include <QObject>
 
+/*
+ * Ta klasa reprezentuje pojedynczy kwadrat widoczny w GUI.
+ *
+ * Wszelkie ruchy i akcje kursorem oraz LPM są
+ * tutaj obsługiwane. Jest to swego rodzaju reprezentacja
+ * klasy Square, ale z użyciem GUI, a co się z tym wiąże,
+ * również wymaganą do GUI logiką.
+ *
+ * W momencie zakończenia poprawnego ruchu, wysyłany jest
+ * sygnał do instancji klasy BoardQt, który wywołuje aktualizację
+ * logiki stanu gry, a co za tym idzie, również stanu każdej z i
+ * nstancji klasy SquareQt.
+*/
 class SquareQt: public QObject, public QGraphicsRectItem
 {
     Q_OBJECT

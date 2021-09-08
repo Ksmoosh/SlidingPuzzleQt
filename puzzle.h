@@ -6,7 +6,13 @@
 #include "square.h"
 #include "puzzleBoard.h"
 
-
+/*
+ * Ta klasa służy za głównego operatora logiki gry bez udziału UI.
+ *
+ * Odpowiada ona za odpowiedne wygenerowanie losowej planszy, aby
+ * była ona rozwiązywalna, za wyszukiwanie pozycji kwadratów, które
+ * użytkownik może w danej chwili przesunąć w puste miejsce.
+*/
 class Puzzle
 {
 public:

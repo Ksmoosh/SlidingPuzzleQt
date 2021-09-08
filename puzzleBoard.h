@@ -5,6 +5,11 @@
 #include <vector>
 #include "square.h"
 
+/*
+ * Ta klasa jest reprezentacją obiektu planszy do gry.
+ *
+*/
+
 class Square;
 
 class PuzzleBoard

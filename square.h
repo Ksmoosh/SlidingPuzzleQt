@@ -1,6 +1,11 @@
 #ifndef SQUARE_H
 #define SQUARE_H
 
+/*
+ * Ta klasa jest reprezentacją obiektu pojedynczego kwadratu na planszy.
+ *
+*/
+
 class Square
 {
 public:
