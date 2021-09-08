@@ -27,8 +27,7 @@ SquareQt::SquareQt(int rectSize, int positionX, int positionY,
 //    this->paint()
     if(isMovable)
     {
-        this->setBrush(QBrush(QColor(0, 0, 255, 255)));
-        this->setFlag(QGraphicsItem::ItemIsMovable);
+        this->setAsMovable();
     }
     else if(isEmpty)
     {
@@ -36,14 +35,21 @@ SquareQt::SquareQt(int rectSize, int positionX, int positionY,
     }
     else
     {
-        this->setBrush(QBrush(QColor(255, 0, 0, 255)));
+        this->setAsNonMovable();
     }
 }
 
-//void SquareQt::setEmptySquarePos(QPointF &pos)
-//{
-//    this->emptySquarePos=pos;
-//}
+void SquareQt::setAsMovable()
+{
+    this->setBrush(QBrush(QColor(255, 0, 0, 255)));
+    this->setFlag(QGraphicsItem::ItemIsMovable);
+}
+
+void SquareQt::setAsNonMovable()
+{
+    this->setBrush(QBrush(QColor(255, 0, 0, 255)));
+    this->setFlag(QGraphicsItem::ItemIsMovable, false);
+}
 
 void SquareQt::setText(QGraphicsTextItem *text)
 {
@@ -131,8 +137,11 @@ void SquareQt::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         if((this->emptySquare->pos() - this->pos()).manhattanLength() < (this->beforeMove - this->pos()).manhattanLength())
         {
             this->setPos(this->emptySquare->pos());
+            int position = this->position;
+            this->setPosition(this->emptySquare->position);
+            this->emptySquare->setPosition(position);
             this->emptySquare->setPos(this->beforeMove);
-            emit this->moveMade(this->position);
+            emit this->moveMade(position);
         }
         else
         {

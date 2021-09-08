@@ -18,6 +18,8 @@ public:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void setText(QGraphicsTextItem *text);
     void setEmptySquare(SquareQt *emptySquare);
+    void setAsMovable();
+    void setAsNonMovable();
     bool movableArea(QPointF *event);
     bool moveVertical;
     void setEmptySquarePos(QPointF &pos);

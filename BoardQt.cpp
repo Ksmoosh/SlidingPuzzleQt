@@ -53,11 +53,24 @@ QVector<SquareQt*> BoardQt::setupSquares(QGraphicsScene *scene, PuzzleBoard &boa
 void BoardQt::updateBoard(int move)
 {
     qDebug() << this->puzzle->get_movables();
-    this->puzzle->switchSquares(this->puzzle->puzzleBoard, move);
+    qDebug() << move;
+    qDebug() << this->puzzle->switchSquares(this->puzzle->puzzleBoard, move);
     this->puzzle->set_movables(this->puzzle->puzzleBoard);
     qDebug() << this->puzzle->get_movables();
+    qDebug() << this->squares.size();
+    std::vector<int> movables = this->puzzle->get_movables();
     for(int i = 0; i < this->squares.size(); i++)
     {
-
+        for(int j = 0; j < movables.size(); j++)
+        {
+            if(this->squares[i]->position == movables[j])
+            {
+                qDebug() << this->squares[i]->position;
+                this->squares[i]->setAsMovable();
+                break;
+            }
+            else if (this->emptySquare != this->squares[i])
+                this->squares[i]->setAsNonMovable();
+        }
     }
 }

@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
         QObject::connect(squares[i], &SquareQt::moveMade,
                          board, &BoardQt::updateBoard);
     }
+    board->squares = squares;
 //    SquareQt * rect = new SquareQt(RECT_SIZE, 0, 0);
 //    SquareQt * rect2 = new SquareQt(RECT_SIZE, 100, 100);
 
