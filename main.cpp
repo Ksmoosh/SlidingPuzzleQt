@@ -6,6 +6,8 @@
 #include <QMouseEvent>
 #include <QVector>
 #include <QObject>
+#include <QMessageBox>
+#include <QPushButton>
 
 #include <iostream>
 #include <iomanip>
@@ -28,8 +30,37 @@ int SCENE_RECT = 800;
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    int puzzle_dim;
     //MainWindow w;
     //w.show();
+
+    QMessageBox dimChooseBox;
+    dimChooseBox.setWindowTitle("Witaj w grze!");
+    QAbstractButton* button2dim = dimChooseBox.addButton(QObject::tr("2x2"), QMessageBox::YesRole);
+    QAbstractButton* button3dim = dimChooseBox.addButton(QObject::tr("3x3"), QMessageBox::YesRole);
+    QAbstractButton* button4dim = dimChooseBox.addButton(QObject::tr("4x4"), QMessageBox::YesRole);
+    dimChooseBox.setText(QStringLiteral("Witaj! Wybierz wymiary puzzli:"));
+//    dimChooseBox.setStandardButtons(QMessageBox::Ok);
+//    dimChooseBox.setButtonText(QMessageBox::Ok, QObject::tr("Zakończ"));
+//    dimChooseBox.setDefaultButton(QMessageBox::Ok);
+    dimChooseBox.exec();
+    if(dimChooseBox.clickedButton()==button2dim)
+    {
+        puzzle_dim = 2;
+    }
+    else if(dimChooseBox.clickedButton()==button3dim)
+    {
+        puzzle_dim = 3;
+    }
+    else if(dimChooseBox.clickedButton()==button4dim)
+    {
+        puzzle_dim = 4;
+    }
+    else
+    {
+        QCoreApplication::quit();
+    }
+
     // setting up scene
     QGraphicsScene * scene = new QGraphicsScene();
     scene->setSceneRect(0, 0, SCENE_RECT, SCENE_RECT);
@@ -38,9 +69,9 @@ int main(int argc, char *argv[])
     QGraphicsView * view = new QGraphicsView();
     view->setFixedSize(SCENE_RECT, SCENE_RECT);
 
-    BoardQt *board = new BoardQt(SCENE_RECT, 4);
+    BoardQt *board = new BoardQt(SCENE_RECT, puzzle_dim);
 
-    Puzzle *puzzle = new Puzzle(4);
+    Puzzle *puzzle = new Puzzle(puzzle_dim);
     board->puzzle = puzzle;
     board->puzzle->setup_board();
 
@@ -51,26 +82,6 @@ int main(int argc, char *argv[])
                          board, &BoardQt::updateBoard);
     }
     board->squares = squares;
-//    SquareQt * rect = new SquareQt(RECT_SIZE, 0, 0);
-//    SquareQt * rect2 = new SquareQt(RECT_SIZE, 100, 100);
-
-//    scene->addItem(rect);
-//    scene->addItem(rect2);
-
-//    rect->setFlag(QGraphicsItem::ItemIsFocusable);
-//    rect->setFocus();
-
-    // Dijkstra alg = Dijkstra(boardSize*boardSize, boardSize);
-    // alg.solve(puzzle);
-//    int toMove;
-//    while(true)
-//    {
-//        cout<<"\n"<<"Enter id of the square you want to move: ";
-//        cin>>toMove;
-//        cout<<"\n"<<puzzle.switchSquares(puzzle.puzzleBoard, toMove)<<"\n";
-//        puzzle.print_board(puzzle.get_puzzleBoard());
-//    }
-
 
     view->setScene(scene);
     view->show();

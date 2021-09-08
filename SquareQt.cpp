@@ -54,8 +54,11 @@ void SquareQt::setAsNonMovable()
 void SquareQt::setText(QGraphicsTextItem *text)
 {
     this->text = text;
-    text->setPlainText(QString::number(this->id));
-    text->setFont(QFont("Arial", 35));
+    if(this->id != 0)
+    {
+        text->setPlainText(QString::number(this->id));
+        text->setFont(QFont("Arial", 35));
+    }
     text->setPos(this->x(), this->y());
     this->setParentItem(text);
     this->setFlag(QGraphicsItem::ItemStacksBehindParent);

@@ -11,6 +11,7 @@ using namespace std;
 Puzzle::Puzzle(int size) : size(size)
 {
     this->puzzleBoard = PuzzleBoard(size);
+    this->num_moves = 0;
 };
 
 /**
@@ -210,4 +211,14 @@ bool Puzzle::puzzleSolved(PuzzleBoard puzzleBoard)
             return false;
     }
     return true;
+}
+
+int const Puzzle::get_num_moves()
+{
+    return this->num_moves;
+}
+
+void Puzzle::increaseNumMoves()
+{
+    this->num_moves += 1;
 }

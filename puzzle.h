@@ -10,7 +10,7 @@
 class Puzzle
 {
 public:
-    explicit Puzzle(int size);
+    Puzzle(int size);
 
     void set_position_of_blank(PuzzleBoard &puzzleBoard, int const &newBlank);
     void set_position_of_blank(int const &newBlank);
@@ -21,6 +21,7 @@ public:
     int const get_row_of_blank(std::vector<int> &puzzleIntBoard);
     int const get_position_of_blank();
     int const get_position_of_blank(PuzzleBoard const &puzzleBoard);
+    int const get_num_moves();
     PuzzleBoard get_puzzleBoard() const;
     std::vector<int> const get_movables();
     std::vector<int> const get_movables(PuzzleBoard &puzzleBoard);
@@ -33,12 +34,13 @@ public:
     bool puzzleSolved(PuzzleBoard puzzleBoard);
     void create_random_int_board(std::vector<int> &puzzleIntBoard);
     void random_board_to_squares(PuzzleBoard &puzzleBoard, std::vector<int> &puzzleIntBoard);
-
+    void increaseNumMoves();
     //test
     void print_board(PuzzleBoard const &puzzleBoard);
     PuzzleBoard puzzleBoard;
 
 private:
+    int num_moves;
     int size;
     int num_elems;
     int blank_position;

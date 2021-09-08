@@ -14,6 +14,7 @@ public:
     QVector<SquareQt*> setupSquares(QGraphicsScene *scene, PuzzleBoard &randomBoard);
     QVector<SquareQt*> squares;
     SquareQt* emptySquare;
+    void solvedPopup();
     int rect_size;
     int side;
     int num_squares;

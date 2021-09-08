@@ -52,12 +52,10 @@ QVector<SquareQt*> BoardQt::setupSquares(QGraphicsScene *scene, PuzzleBoard &boa
 
 void BoardQt::updateBoard(int move)
 {
-    qDebug() << this->puzzle->get_movables();
-    qDebug() << move;
-    qDebug() << this->puzzle->switchSquares(this->puzzle->puzzleBoard, move);
+    this->puzzle->switchSquares(this->puzzle->puzzleBoard, move);
     this->puzzle->set_movables(this->puzzle->puzzleBoard);
-    qDebug() << this->puzzle->get_movables();
-    qDebug() << this->squares.size();
+    this->puzzle->increaseNumMoves();
+    qDebug() << this->puzzle->get_num_moves();
     std::vector<int> movables = this->puzzle->get_movables();
     for(int i = 0; i < this->squares.size(); i++)
     {
@@ -65,12 +63,29 @@ void BoardQt::updateBoard(int move)
         {
             if(this->squares[i]->position == movables[j])
             {
-                qDebug() << this->squares[i]->position;
                 this->squares[i]->setAsMovable();
                 break;
             }
             else if (this->emptySquare != this->squares[i])
                 this->squares[i]->setAsNonMovable();
         }
+    }
+    if(this->puzzle->puzzleSolved(this->puzzle->puzzleBoard))
+        this->solvedPopup();
+}
+
+void BoardQt::solvedPopup()
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Gratulacje!");
+    if(this->puzzle->get_num_moves() == 1)
+        msgBox.setText(QStringLiteral("Gratulacje! Ułożono puzzle w %1 ruchu!").arg(this->puzzle->get_num_moves()));
+    else
+        msgBox.setText(QStringLiteral("Gratulacje! Ułożono puzzle w %1 ruchach!").arg(this->puzzle->get_num_moves()));
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setButtonText(QMessageBox::Ok, QObject::tr("Zakończ"));
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    if(msgBox.exec() == QMessageBox::Ok){
+      QCoreApplication::quit();
     }
 }
